@@ -8,11 +8,20 @@ html(lang='en')
         nav.navbar
             header.navTitle
                 .title ABQRVerifier
-                .subtitle Unofficial COVID19 QR Code Verifier
+                .subtitle Unofficial COVID-19 Vaccine QR Code Verifier
         main.content
             .videoContainer
-                #startupMessage.message &#x1F3A5; Unable to access video stream (please make sure you have a webcam enabled)
-                #loadingMessage(hidden).message &#x231B; Loading video...
-                canvas#canvas(hidden)
+                #videoPlaceholder.videoPlaceholder
+                    #startupMessage.message
+                        span.large &#128247;
+                        br
+                        | Unable to use camera
+                        br
+                        span.small (might be loading)
+                    #loadingMessage(hidden).message
+                        span.large &#x231B;
+                        br
+                        | Loading video...
+                canvas#canvas.scanVideo(width=640 height=480)
             .outputContainer
                 #output.message

@@ -17,6 +17,7 @@ class DevelopmentConfig extends AndConfig {
       devServer: {
         https: true,
         hot: false,
+        liveReload: false,
         devMiddleware: {
           writeToDisk: false
         }

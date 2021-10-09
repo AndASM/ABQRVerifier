@@ -4,6 +4,7 @@ import {SmartHealthCard} from './SmartHealthCard/smarthealthcards'
 
 interface AppElements {
   video: HTMLVideoElement,
+  videoPlaceholder: HTMLElement,
   canvas: HTMLCanvasElement,
   output: HTMLElement,
   startupMessage: HTMLElement,
@@ -41,6 +42,7 @@ export default class App {
     video.play().then(() => {
       el.loadingMessage.hidden = true
       el.canvas.hidden = false
+      el.videoPlaceholder.hidden = true
       el.output.hidden = false
       this.video = new CanvasVideoDrawing(el.canvas, video)
       this.video.onVideoFrame.subscribe((sender, args) => this.tickDropper(sender, args))
@@ -56,12 +58,10 @@ export default class App {
             shc.immunizationPercentage === 100 ? 'complete' : 'incomplete'
         }`
     
-    const markup = `
+    container.innerHTML = `
         <div class="patientName">${shc.patient.fullName}</div>
         <div class="immunizationLevel">${shc.immunizationPercentage.toString(10)}</div>
     `
-    
-    container.innerHTML = markup
     
     output.appendChild(container)
     output.insertBefore(container, output.firstChild)
@@ -110,7 +110,8 @@ export default class App {
       loadingMessage: document.getElementById('loadingMessage'),
       output: document.getElementById('output'),
       startupMessage: document.getElementById('startupMessage'),
-      video: <HTMLVideoElement>document.createElement('video')
+      video: <HTMLVideoElement>document.createElement('video'),
+      videoPlaceholder: document.getElementById('videoPlaceholder')
     }
   }
   
