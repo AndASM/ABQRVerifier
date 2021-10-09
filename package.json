@@ -17,12 +17,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:5-do": "webpack build",
-    "start:2-dep": "run-s build",
-    "start:5-do": "webpack serve",
-    "pages:2-dep": "run-s build",
+    "serve:2-dep": "run-s build",
+    "serve:5-do": "webpack serve",
+    "pages:2-dep": "webpack build --mode production",
     "pages:5-do": "gh-pages -d dist -f",
     "build": "run-s build:**",
-    "start": "run-s start:**",
+    "serve": "run-s serve:**",
     "pages": "run-s pages:**"
   },
   "keywords": [],

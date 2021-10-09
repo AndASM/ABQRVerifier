@@ -52,6 +52,12 @@ export namespace _Service {
     console.log('Caches removed')
     await sw.clients.claim()
     console.log('Clients claimed')
+    
+    const windows = await sw.clients.matchAll({type: 'window'})
+    for (const window of windows) {
+      if ('navigate' in window)
+        window.navigate(sw.location.href.replace(/\/[^\/]+?\.[^\/]+?$/, '/')).then()
+    }
   }
   
   function eventOnFetch(event: FetchEvent) {

@@ -49,7 +49,8 @@ class CommonConfig extends AndConfig {
             include: this.paths.webWorkers.path
           },
           {test: /\.pug$/i, loader: 'simple-pug-loader'},
-          {test: /\.s[ac]ss$/i, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']}
+          {test: /\.s[ac]ss$/i, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']},
+          {test: /CNAME/, type: 'asset/resource', generator: {filename: '[name]'}}
         ]
       },
       resolve: {
