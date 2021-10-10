@@ -1,6 +1,10 @@
-= ABQRVerifier
+= https://qr.andor.me[ABQRVerifier]
 
 A verifier app for COVID19 proof-of-vaccine QR codes.
+
+Accessible at: https://qr.andor.me
+
+The app can be used offline, open the above URL once and bookmark it. You should be able to re-visit the page offline, such as in airplane mode.
 
 == Privacy
 While this app is designed as a webpage, it runs offline. Meaning, once you open the page you could turn on airplane mode and it would still work. It does not send any of the QR code data. It processes the data on your phone or computer.
