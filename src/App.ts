@@ -1,5 +1,6 @@
 import type {QRCode} from 'jsqr-es6'
 import {CanvasVideoDrawing, Rectangular} from './drawing'
+import {issuerNames} from './SmartHealthCard/knownissuers'
 import {SmartHealthCard} from './SmartHealthCard/smarthealthcards'
 
 interface AppElements {
@@ -8,7 +9,8 @@ interface AppElements {
   canvas: HTMLCanvasElement,
   output: HTMLElement,
   startupMessage: HTMLElement,
-  loadingMessage: HTMLElement
+  loadingMessage: HTMLElement,
+  subtitle: HTMLElement
 }
 
 function isObject(thing: any) {
@@ -37,6 +39,9 @@ export default class App {
     this.location = null
     this.qrWorker = new Worker('./qr.worker.js')
     this.qrWorker.addEventListener('message', event => this.onMessage(event))
+    
+    const regions = Object.getOwnPropertyNames(issuerNames)
+    this.el.subtitle.innerText = `With experimental support for ${regions.slice(0,-1).join(', ')}, and ${regions.slice(-1)} proof-of-vaccine QR codes`
   }
   
   async onMessage(event: MessageEvent) {
@@ -136,7 +141,8 @@ export default class App {
       output: document.getElementById('output'),
       startupMessage: document.getElementById('startupMessage'),
       video: <HTMLVideoElement>document.createElement('video'),
-      videoPlaceholder: document.getElementById('videoPlaceholder')
+      videoPlaceholder: document.getElementById('videoPlaceholder'),
+      subtitle: document.getElementById('subtitle')
     }
   }
   

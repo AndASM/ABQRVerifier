@@ -13,7 +13,8 @@
     "moduleResolution": "node",
     "module": "ESNext",
     "baseUrl": ".",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": [

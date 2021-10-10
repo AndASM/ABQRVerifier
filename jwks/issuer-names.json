@@ -1,5 +1,8 @@
 {
   "Alberta": "https://covidrecords.alberta.ca/smarthealth/issuer",
-  "BritishColumbia": "https://smarthealthcard.phsa.ca/v1/issuer",
-  "Quebec": "https://covid19.quebec.ca/PreuveVaccinaleApi/issuer"
+  "British Columbia": "https://smarthealthcard.phsa.ca/v1/issuer",
+  "Quebec": "https://covid19.quebec.ca/PreuveVaccinaleApi/issuer",
+  "Ontario": "https://prd.pkey.dhdp.ontariohealth.ca",
+  "Saskatchewan": "https://skphr.prd.telushealthspace.com",
+  "Yukon": "https://pvc.service.yukon.ca"
 }
