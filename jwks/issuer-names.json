@@ -1,0 +1,5 @@
+{
+  "Alberta": "https://covidrecords.alberta.ca/smarthealth/issuer",
+  "BritishColumbia": "https://smarthealthcard.phsa.ca/v1/issuer",
+  "Quebec": "https://covid19.quebec.ca/PreuveVaccinaleApi/issuer"
+}

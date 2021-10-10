@@ -4,38 +4,44 @@
   "description": "",
   "private": true,
   "source": "src/index.html",
+  "type": "module",
   "babel": {
     "presets": [
       "@babel/preset-env"
     ]
   },
-  "browserslist": [
-    "> 0.5%",
-    "last 2 versions",
-    "not dead"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:5-do": "webpack build",
     "serve:2-dep": "run-s build",
     "serve:5-do": "webpack serve",
     "pages:2-dep": "webpack build --mode production",
-    "pages:5-do": "gh-pages -d dist -f",
-    "build": "run-s build:**",
-    "serve": "run-s serve:**",
-    "pages": "run-s pages:**"
+    "pages:3-cname": "del-cli ./dist/CNAME",
+    "pages:5-do": "gh-pages -r git@github.com:AndASM/QR-Test.git -d dist -f",
+    "public:2-dep": "webpack build --mode production",
+    "public:5-do": "gh-pages -d dist -f",
+    "build": "env-cmd -e esm run-s build:**",
+    "serve": "env-cmd -e esm run-s serve:**",
+    "pages": "env-cmd -e esm run-s pages:**",
+    "public": "env-cmd -e esm run-s public:**"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "*",
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "*",
     "@types/glob": "*",
     "@types/mini-css-extract-plugin": "*",
     "@types/node": "*",
     "@types/pako": "*",
     "@types/webpack": "*",
     "@types/webpack-dev-server": "*",
+    "babel-loader": "*",
     "css-loader": "*",
+    "del-cli": "^4.0.1",
+    "env-cmd": "^10.1.0",
     "gh-pages": "^3.2.3",
     "glob": "*",
     "html-webpack-plugin": "*",
@@ -52,15 +58,15 @@
     "typescript": "*",
     "webpack": "*",
     "webpack-cli": "*",
-    "webpack-dev-server": "*",
-    "babel-loader": "*",
-    "@babel/core": "*",
-    "@babel/preset-env": "*"
+    "webpack-dev-server": "*"
   },
   "dependencies": {
     "jose": "*",
     "js-base64": "*",
-    "jsqr": "*",
+    "jsqr-es6": "file:packages/jsQR",
     "pako": "*"
-  }
+  },
+  "workspaces": [
+    "./packages/*"
+  ]
 }

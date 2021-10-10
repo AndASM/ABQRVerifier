@@ -1,4 +1,4 @@
-import * as _webpack from 'webpack'
+import _webpack from 'webpack'
 import webpackDevServer from 'webpack-dev-server'
 import {mergeWithCustomize} from 'webpack-merge'
 import gitInfo from './git-info'
@@ -13,17 +13,6 @@ abstract class AndConfig {
   
   get paths() {
     return this._paths
-  }
-
-  protected static _gitInfoPlugin: _webpack.DefinePlugin
-  
-  static get gitInfoPlugin() {
-    if (!this._gitInfoPlugin)
-      this._gitInfoPlugin = new _webpack.DefinePlugin({
-        GIT_VERSION: JSON.stringify(gitInfo.GIT_VERSION),
-        GIT_AUTHOR_DATE: JSON.stringify(gitInfo.GIT_AUTHOR_DATE)
-      })
-    return this._gitInfoPlugin
   }
   
   get Configuration() {
@@ -49,7 +38,18 @@ abstract class AndConfig {
   
   static Configurations: AndConfig.ConfigModes = {}
   static Common: Set<string> = new Set<string>()
-  private static merge = mergeWithCustomize({})
+  static merge = mergeWithCustomize({})
+
+  protected static _gitInfoPlugin: _webpack.DefinePlugin
+
+  static get gitInfoPlugin() {
+    if (!this._gitInfoPlugin)
+      this._gitInfoPlugin = new _webpack.DefinePlugin({
+        GIT_VERSION: JSON.stringify(gitInfo.GIT_VERSION),
+        GIT_AUTHOR_DATE: JSON.stringify(gitInfo.GIT_AUTHOR_DATE)
+      })
+    return this._gitInfoPlugin
+  }
   
   static get CommonConfigs() {
     return Array.from(AndConfig.Common, key => AndConfig.Configurations[key])

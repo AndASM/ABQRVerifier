@@ -1,4 +1,4 @@
-import './webpack-config/webpack.common'
+import './webpack-config/webpack.common.ts'
 import './webpack-config/webpack.production'
 import './webpack-config/webpack.development'
 import AndConfig from './src/Utilities/and-config'

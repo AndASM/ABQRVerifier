@@ -1,11 +1,13 @@
 // @ts-ignore
 import {importJWK} from 'jose/key/import'
 import type {KeyLike} from 'jose/types'
-
+// @ts-ignore
+import * as test1 from '../../jwks/*.json'
+console.log('loaded')
 // Alberta value derived from known signature
 // Other values from https://raw.githubusercontent.com/olalonde/shc-protocol/master/src/keys.ts
 
-const knownIssuers: { [key: string]: Promise<KeyLike | Uint8Array> } = {
+const knownIssuer: { [key: string]: Promise<KeyLike | Uint8Array> } = {
   'https://covidrecords.alberta.ca/smarthealth/issuer':
       importJWK({
         kid: 'JoO-sJHpheZboXdsUK4NtfulfvpiN1GlTdNnXN3XAnM',
@@ -39,6 +41,6 @@ const knownIssuers: { [key: string]: Promise<KeyLike | Uint8Array> } = {
 }
 
 export async function getKnownIssuers(issuer: string) {
-  return await knownIssuers[issuer]
+  return await knownIssuer[issuer]
 }
 

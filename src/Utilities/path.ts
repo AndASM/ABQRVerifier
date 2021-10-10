@@ -1,4 +1,5 @@
 import node_path from 'path'
+import {fileURLToPath} from 'url'
 import Indexable from './indexable'
 
 class Path extends Object implements node_path.ParsedPath {
@@ -109,6 +110,12 @@ namespace Path {
       Map<string, Like>
       | ArrayLike<[string, Like]>
       | Collection
+  
+  export function getFileDirName(metaUrl: string) {
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = node_path.dirname(__filename)
+    return {__filename, __dirname}
+  }
   
   export class Collection extends Indexable<Collection> {
     protected _paths: Map<string, Path>

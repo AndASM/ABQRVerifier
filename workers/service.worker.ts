@@ -2,8 +2,9 @@ const sw = self as ServiceWorkerGlobalScope & typeof globalThis
 
 export namespace _Service {
   export const version = `${GIT_VERSION}: ${GIT_AUTHOR_DATE}`
-  export const cacheNames = {install: `install ${GIT_VERSION}`}
+  export const cacheNames = {install: `install2 ${GIT_VERSION}`}
   export const knownUrls = [
+    'qr.worker.js',
     '404.html',
     '404.js',
     '404.css'

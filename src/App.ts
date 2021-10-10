@@ -1,4 +1,4 @@
-import jsQR from 'jsqr'
+import type {QRCode} from 'jsqr-es6'
 import {CanvasVideoDrawing, Rectangular} from './drawing'
 import {SmartHealthCard} from './SmartHealthCard/smarthealthcards'
 
@@ -11,6 +11,9 @@ interface AppElements {
   loadingMessage: HTMLElement
 }
 
+function isObject(thing: any) {
+  return typeof thing === 'object' && !Array.isArray(thing) && thing !== null
+}
 
 export default class App {
   el: AppElements
@@ -19,12 +22,29 @@ export default class App {
   _tickAvailable: boolean
   location: Rectangular
   locationCountdown: number
+  qrWorker: Worker
+  scanLine: number
+  scanDir: boolean
+  scanSpeed: number
   
   constructor() {
     this.initElements()
+    this.scanLine = 0
+    this.scanSpeed = 4
+    this.scanDir = true
     this._tickAvailable = true
     this.lastQrData = ''
     this.location = null
+    this.qrWorker = new Worker('./qr.worker.js')
+    this.qrWorker.addEventListener('message', event => this.onMessage(event))
+  }
+  
+  async onMessage(event: MessageEvent) {
+    this._tickAvailable = true
+    if (typeof event.data === 'string')
+      console.log(event.data)
+    if (isObject(event?.data) && 'location' in event.data && 'data' in event.data)
+      await this.onQrCode(event.data)
   }
   
   async run() {
@@ -45,7 +65,7 @@ export default class App {
       el.videoPlaceholder.hidden = true
       el.output.hidden = false
       this.video = new CanvasVideoDrawing(el.canvas, video)
-      this.video.onVideoFrame.subscribe((sender, args) => this.tickDropper(sender, args))
+      this.video.onVideoFrame.subscribe(this.onVideoFrame.bind(this))
       this.video.onVideoFrame.subscribe(() => this.drawRect())
     })
   }
@@ -71,36 +91,41 @@ export default class App {
     }
   }
   
-  protected async tickDropper(canvas: CanvasVideoDrawing, imageData: ImageData) {
+  protected onVideoFrame(canvas: CanvasVideoDrawing, imageData: ImageData) {
     if (this._tickAvailable) {
       this._tickAvailable = false
-      await this.tick(canvas, imageData)
-      this._tickAvailable = true
+      this.qrWorker.postMessage(imageData)
+      this.moveScanLine()
     }
+  }
+  
+  protected moveScanLine() {
+    this.scanLine += this.scanDir ? this.scanSpeed : -this.scanSpeed
+    if (this.scanLine <= 0)
+      this.scanDir = true
+    if (this.scanLine >= this.el.canvas.height)
+      this.scanDir = false
   }
   
   protected drawRect() {
     if (this.locationCountdown > 0) {
-      this.video.drawRectangular(this.location, '#FF3B58')
+      this.video.drawRectangular(this.location, '#3B58FF')
       this.locationCountdown--
+    }
+    else {
+      this.video.drawLine({x: 0, y: this.scanLine}, {x: this.el.canvas.width, y: this.scanLine}, '#FF3B58')
     }
   }
   
-  protected async tick(canvas: CanvasVideoDrawing, imageData: ImageData) {
-    const qrCode = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'dontInvert'
-    })
+  protected async onQrCode(qrCode: QRCode) {
+    this.location = qrCode.location
+    this.locationCountdown = 30
     
-    if (qrCode) {
-      this.location = qrCode.location
-      this.locationCountdown = 30
+    // This is just to prevent spam
+    if (this.lastQrData !== qrCode.data) {
+      this.lastQrData = qrCode.data
       
-      // This is just to prevent spam
-      if (this.lastQrData !== qrCode.data) {
-        this.lastQrData = qrCode.data
-        
-        SmartHealthCard.build(qrCode.data).then(shc => this.addEntry(shc))
-      }
+      SmartHealthCard.build(qrCode.data).then(shc => this.addEntry(shc))
     }
   }
   
