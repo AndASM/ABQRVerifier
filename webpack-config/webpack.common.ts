@@ -4,7 +4,7 @@ import TerserPlugin from 'terser-webpack-plugin'
 import AndConfig from '../src/Utilities/and-config'
 import Path from '../src/Utilities/Path'
 
-const {__dirname} = Path.getFileDirName(import.meta.url);
+const {__dirname} = Path.getFileDirName(import.meta.url)
 
 class CommonConfig extends AndConfig {
   protected constructor() {
@@ -28,21 +28,19 @@ class CommonConfig extends AndConfig {
       },
       module: {
         rules: [
-          this.tsRule('src', {
+          /*this.tsRule('src', {
             include: this.paths.src.path
           }),
           this.tsRule('webWorkers', {
             include: this.paths.webWorkers.path
-          }),
+          }),*/
           this.jsRule(),
           {test: /\.pug$/i, loader: 'simple-pug-loader'},
           {test: /\.s[ac]ss$/i, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']},
           {test: /CNAME/, type: 'asset/resource', generator: {filename: '[name]'}}
         ]
       },
-      resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js']
-      },
+      resolve: this.resolve(),
       output: {
         filename: '[name].js',
         path: this.paths.dist.path,
@@ -82,6 +80,16 @@ class CommonConfig extends AndConfig {
     return CommonConfig.pathDef
   }
   
+  get features() {
+    return ['es6', 'es6-module', 'webworkers', 'serviceworkers', 'async-functions']
+  }
+  
+  resolve() {
+    return {
+      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+    }
+  }
+  
   public babelUse(features?: string[]): AndConfig.webpack.RuleSetUseItem {
     const targets = features ?
         `supports ${features.join(' and supports ')}, not ie <= 999, not ie_mob <= 999, not dead`
@@ -90,19 +98,40 @@ class CommonConfig extends AndConfig {
       loader: 'babel-loader',
       options: {
         exclude: [
-          /node_modules/,
+          /node_modules/
         ],
-        presets: [['@babel/preset-env', {targets: targets}]],
+        presets: [
+            ['@babel/preset-env', {targets: targets}],
+            ['@babel/preset-typescript']
+        ],
         plugins: ['@babel/plugin-transform-runtime']
       }
     }
   }
   
-  get features() {
-    return ['es6', 'es6-module', 'webworkers', 'serviceworkers', 'async-functions']
+  public globUse(): AndConfig.webpack.RuleSetUseItem {
+    const banner = (paths: { path: string, module: string }[], importName: string) => {
+      if (importName) {
+        return `const ${importName} = {${paths
+            .map(
+                ({path: filePath, module}) => `
+                      "${(new Path(filePath)).basename.split('.')[0]}": ${module}.default
+                    `
+            )
+            .join(',')}};`
+      }
+    }
+    
+    return {
+      loader: 'glob-import-loader',
+      options: {
+        banner,
+        resolve: this.resolve()
+      }
+    }
   }
   
-  public tsRule(instance: string, mergeData: any): AndConfig.webpack.RuleSetRule {
+  /*public tsRule(instance: string, mergeData: any): AndConfig.webpack.RuleSetRule {
     const fragmentData: AndConfig.webpack.RuleSetRule = {
       test: /\.tsx?$/i,
       use: [
@@ -110,20 +139,22 @@ class CommonConfig extends AndConfig {
         {
           loader: 'ts-loader',
           options: {
-            instance: instance
+            instance: instance,
+            onlyCompileBundledFiles: true
           }
         }
-      ],
+      ]
     }
     
     return AndConfig.merge(fragmentData, mergeData)
-  }
+  }*/
   
   public jsRule(): AndConfig.webpack.RuleSetRule {
     return {
-      test: /\.m?jsx?$/i,
+      test: /\.m?[tj]sx?$/i,
       use: [
-        this.babelUse(this.features)
+        this.babelUse(this.features),
+        this.globUse()
       ]
     }
   }

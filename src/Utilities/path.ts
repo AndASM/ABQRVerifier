@@ -102,6 +102,10 @@ class Path extends Object implements node_path.ParsedPath {
   valueOf(): string {
     return this.path
   }
+  
+  get basename() {
+    return node_path.basename(this.path, this.ext)
+  }
 }
 
 namespace Path {
@@ -112,7 +116,7 @@ namespace Path {
       | Collection
   
   export function getFileDirName(metaUrl: string) {
-    const __filename = fileURLToPath(import.meta.url)
+    const __filename = fileURLToPath(metaUrl)
     const __dirname = node_path.dirname(__filename)
     return {__filename, __dirname}
   }

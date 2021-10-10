@@ -63,7 +63,9 @@ export class SmartHealthCard {
   
   async doVerify() {
     try {
-      const verifyResult = await compactVerify(this.jws, await getKnownIssuers((this.payload as any).iss as string))
+      const issuerKeys = await getKnownIssuers((this.payload as any).iss as string)
+      const currentKey = issuerKeys[(this.header as any).kid]
+      const verifyResult = await compactVerify(this.jws, currentKey)
       this.verified = verifyResult != null
     } catch {
       this.verified = false
