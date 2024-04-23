@@ -44,7 +44,7 @@
     "css-loader": "*",
     "del-cli": "^4.0.1",
     "env-cmd": "^10.1.0",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^5.0.0",
     "glob": "*",
     "glob-import-loader": "^1.1.4",
     "html-webpack-plugin": "*",
